@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <numeric>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -29,16 +30,16 @@ int main() {
             }
         }
 
-        for (vector<int> i : elfs)
+        vector<int> sortable;
+         for (vector<int> i : elfs)
         {
-            int sum = reduce(i.begin(), i.end());
-            if (largestNumber < sum) {
-                largestNumber = sum;
-            }
+            int value = reduce(i.begin(), i.end());
+            sortable.push_back(value);
         } 
+        sort(sortable.begin(),sortable.end());
 
-        cout << "Elf carrying the most Calories, carries " << largestNumber << " calories.";
-  
+        cout << "Elf carrying the most Calories, carries " << sortable[sortable.size()-1] << " calories.\n";
+        cout << "Three top elves carry " << sortable[sortable.size()-1] + sortable[sortable.size()-2] + sortable[sortable.size()-3] << " calories.";
     }
     return 0;
 }
