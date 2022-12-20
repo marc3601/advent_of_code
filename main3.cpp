@@ -21,21 +21,28 @@ char getAsciiChar(int asciiValue) {
   return static_cast<char>(asciiValue);
 }
 
-char findDuplicate(string lineOne, string lineTwo) {
-    unordered_set<char> set;
-    vector<char> result;
-    for (char c : lineOne)
-    {
-        set.insert(c);
+char findDuplicate(string lineOne, string lineTwo, string lineThree) {
+  vector<char> result;
+  for (int i = 0; i < lineOne.length(); i++) {
+    if (lineTwo.find(lineOne[i]) != string::npos 
+    && lineThree.find(lineOne[i]) != string::npos) {
+      result.push_back(lineOne[i]);
     }
+  }
+  for (int i = 0; i < lineTwo.length(); i++) {
+    if (lineOne.find(lineTwo[i]) != string::npos 
+    && lineThree.find(lineTwo[i]) != string::npos) {
+      result.push_back(lineTwo[i]);
+    }
+  }
+  for (int i = 0; i < lineThree.length(); i++) {
+    if (lineOne.find(lineThree[i]) != string::npos 
+    && lineTwo.find(lineThree[i]) != string::npos) {
+      result.push_back(lineThree[i]);
+    }
+  }
 
-    for (char c : lineTwo)
-    {
-        if(set.count(c)) {
-            result.push_back(c);
-        }
-    }
-    return result[0];
+    return result[2];
     
 }
 
@@ -73,19 +80,45 @@ int getCharacterPriority(char character) {
     return ' ';
 }
 
-int main() {
+int main(int argc, char** argv) {
     fstream text_file;
-    text_file.open("input3.txt");
+    if(argv[1]) {
+        text_file.open(argv[1]);
+    } else {
+        cout << "Program closed with status code 0\n";
+        return 0;
+    }
     if (text_file.is_open()) {
         string line;
-        int sum {0};
+        int index {0};
+        vector<string> group;
+        vector<vector<string>> groups;
         while (getline(text_file, line))
         {
-            string partOne = line.substr(0, (line.size())/2);
-            string partTwo = line.substr((line.size())/2, (line.size()));
-            sum += getCharacterPriority(findDuplicate(partOne, partTwo));
+            index++;
+            group.push_back(line);
+            if(index == 3) {
+                groups.push_back(group);
+                group.clear();
+                index = 0;
+            }
+         
         }
-        cout << "Sum of priorities is " << sum;
+        string one,two,three;
+        int total{0};
+        for (vector<string> group : groups)
+        {
+            for (size_t i = 0; i < group.size(); i++)
+            {
+                if (i == 0) one = group[i];
+                if (i == 1) two = group[i];
+                if (i == 2) three = group[i];
+            }
+            total += getCharacterPriority(findDuplicate(one, two, three));  
+        }
+
+        cout << "Sum of priorities of those item types is: " << total << '.' <<endl;
+        
     }
-    return 0;
+    return 1;
 }
